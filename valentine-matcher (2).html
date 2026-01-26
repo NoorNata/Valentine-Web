@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Matcher 💕</title>
+    <link rel="icon" href="heart-love-emoji-3d-png.png" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 30px;
+            color: rgba(255, 255, 255, 0.3);
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            color: #e91e63;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e91e63;
+            border-radius: 15px;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #c2185b;
+            box-shadow: 0 0 10px rgba(233, 30, 99, 0.3);
+        }
+
+        .upload-area {
+            border: 3px dashed #e91e63;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fff5f8;
+        }
+
+        .upload-area:hover {
+            background: #ffe0ec;
+            border-color: #c2185b;
+        }
+
+        .upload-area.dragover {
+            background: #ffc1d9;
+            border-color: #880e4f;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #e91e63, #c2185b);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(233, 30, 99, 0.3);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .preview {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e91e63;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .match-card {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .match-photos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .match-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .heart-divider {
+            font-size: 2em;
+            margin: 0 10px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .compatibility {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-name {
+            font-size: 1.3em;
+            margin: 15px 0 5px 0;
+            font-weight: 600;
+        }
+
+        .match-name {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+
+        .reset-btn {
+            background: white;
+            color: #e91e63;
+            margin-top: 20px;
+        }
+
+        .error {
+            color: #e91e63;
+            margin: 10px 0;
+            display: none;
+            font-weight: bold;
+        }
+        /* From Uiverse.io by cssbuttons-io */ 
+        .btn {
+        position: relative;
+        font-size: 17px;
+        text-transform: uppercase;
+        text-decoration: none;
+        padding: 1em 2.5em;
+        display: inline-block;
+        cursor: pointer;
+        border-radius: 6em;
+        transition: all 0.2s;
+        border: none;
+        font-family: inherit;
+        font-weight: 500;
+        color: black;
+        background-color: white;
+        }
+
+        .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn::after {
+        content: "";
+        display: inline-block;
+        height: 100%;
+        width: 100%;
+        border-radius: 100px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        transition: all 0.4s;
+        }
+
+        .btn::after {
+        background-color: #fff;
+        }
+
+        .btn:hover::after {
+        transform: scaleX(1.4) scaleY(1.6);
+        opacity: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="container">
+        <h1>💕 Valentine Matcher 💕</h1>
+        <p class="subtitle">Temukan pasangan Valentine-mu!</p>
+
+        <div id="uploadSection">
+            <div class="input-group">
+                <input type="text" id="nameInput" placeholder="Masukkan nama kamu..." maxlength="30">
+            </div>
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📸</div>
+                <p>Klik atau drag foto kamu di sini</p>
+                <p style="font-size: 0.9em; color: #999; margin-top: 10px;">JPG, PNG (Max 5MB)</p>
+            </div>
+            <input type="file" id="fileInput" accept="image/*">
+
+            <div class="preview" id="preview">
+                <img id="previewImg" alt="Preview">
+            </div>
+
+            <p class="error" id="error"></p>
+
+            <button id="matchBtn" disabled>Cari Pasangan! 💘</button>
+            <!-- From Uiverse.io by cssbuttons-io --> 
+            <button class="btn" onclick="window.open('#', '_blank')">Fun Web</button>
+
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #666;">Sedang mencari pasangan terbaik...</p>
+        </div>
+
+        <div class="result" id="result">
+            <div class="match-card">
+                <h2>💖 Hasil Matching 💖</h2>
+                <div class="compatibility" id="compatibility">0%</div>
+                <div class="match-photos">
+                    <img id="userPhoto" class="match-photo" alt="Your photo">
+                    <div class="heart-divider">❤️</div>
+                    <img id="matchPhoto" class="match-photo" alt="Match photo">
+                </div>
+                <div class="user-name" id="userName"></div>
+                <div class="match-name" id="matchName"></div>
+                <p id="matchMessage" style="font-size: 1.1em; margin-top: 15px;"></p>
+            </div>
+            <button class="reset-btn" onclick="resetApp()">Coba Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // EDIT BAGIAN INI - PASTE BASE64 FOTO KAMU DI SINI
+        // ========================================
+        
+        // Foto KAMU (pria berjas) - hasil match untuk disyak
+        // Cara: Encode Image 1 jadi base64, paste di antara tanda petik
+        const MY_PHOTO = '7033100044471665666_avatar.png.jpg';
+        // Contoh hasil: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...'
+        
+        // ========================================
+        // JANGAN EDIT BAGIAN BAWAH INI (kecuali mau ganti selebriti)
+        // ========================================
+
+        const celebrities = [
+            { name: 'Nicholas Saputra', photo: 'https://image.tmdb.org/t/p/original/7PHBSJB9b73QsqZJ373yuLyUdwK.jpg' },
+            { name: 'Lucas', photo: 'https://th.bing.com/th/id/OIP.gysVQR_WCNjtlPs49u3snQHaNL?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3'},
+            { name: 'Jefri Nichole', photo: 'https://play-lh.googleusercontent.com/rP4vIK2jing9WVzOg2uLStiFIilpWQ8nmRDM3VoC0TnHOVilwks2rEn28NjkcwqLGg'},
+            { name: 'Lee Min Ho', photo: 'https://wallpapers.com/images/hd/lee-min-ho-singer-model-kfr8mgpmaua2mxun.jpg' },
+            { name: 'Park Seo Joon', photo: 'https://th.bing.com/th/id/OIP.j4V2Y8JHDzTYB4rN5rtfSgHaLG?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3' },
+            { name: 'Kim Soo Hyun', photo: 'https://assets.pikiran-rakyat.com/crop/0x0:0x0/x/photo/2025/03/20/346230879.jpg' },
+            { name: 'Song Joong Ki', photo: 'https://static-images.vnncdn.net/files/publish/2023/2/7/song-joong-ki-profile-665.jpg' },
+            { name: 'IU (Lee Ji Eun)', photo: 'https://p4.wallpaperbetter.com/wallpaper/182/754/492/iu-lee-ji-eun-singer-actress-k-pop-hd-wallpaper-preview.jpg' },
+            { name: 'Bae Suzy', photo: 'https://tse2.mm.bing.net/th/id/OIP.jPvBMdStPhjZmVV2yosojQHaFP?rs=1&pid=ImgDetMain&o=7&rm=3' },
+            { name: 'Raisa Andriana', photo: 'https://cdn.tatlerasia.com/tatlerasia/i/2022/09/16182237-raisa_cover_1200x675.jpeg' },
+            { name: 'Isyana Sarasvati', photo: 'https://th.bing.com/th/id/OIP.Q-3y4-gia1oJJ1YMDWxx-QHaEo?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3' },
+            { name: 'Dian Sastrowardoyo', photo: 'https://www.aljazeera.com/wp-content/uploads/2024/07/IMG_8456-1-1722317701.jpg?resize=770%2C513&quality=80' },
+            { name: 'Nao Tsurushima', photo: 'https://i.pinimg.com/736x/b8/db/50/b8db50f9687906c8936216d3f3f74b2d.jpg' },
+            { name: 'Makoto Okunaka', photo: 'https://superstarsbio.com/wp-content/uploads/2021/11/Makoto-Okunaka-actress.jpg' },
+            { nama: 'Rina Chinen', photo: 'https://i.mydramalist.com/d6Zkd_5c.jpg'},
+            { nama: 'Ayaka Namiki', photo: 'https://tse4.mm.bing.net/th/id/OIP.ARJKq-1B0Yl2X7AFts_UiQHaJ3?rs=1&pid=ImgDetMain&o=7&rm=3'},
+            { nama: 'Yuna Hoshino', photo: 'https://tse4.mm.bing.net/th/id/OIP.mIhtwpB9un2_jU0kCN-5ugAAAA?rs=1&pid=ImgDetMain&o=7&rm=3'},
+            { name: 'Shieri Ohata', photo: 'https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/1458892_v9_aa.jpg'},
+            { name: 'Nahida', photo: 'https://tse4.mm.bing.net/th/id/OIP.1WJT7dwieQkDxcGCsWiI2AHaEK?rs=1&pid=ImgDetMain&o=7&rm=3'},
+            { name: 'Venti', photo: 'https://wallpapers.com/images/hd/venti-1920-x-1600-background-jm2qx8jp2fuuz6vc.jpg'}
+        ];
+
+        let uploadedFile = null;
+        let matchCache = {}; // Cache untuk konsistensi hasil
+
+        // Create floating hearts
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = '💕';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        // Upload area interactions
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const nameInput = document.getElementById('nameInput');
+        const matchBtn = document.getElementById('matchBtn');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        nameInput.addEventListener('input', updateMatchButton);
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showError('File harus berupa gambar!');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                showError('Ukuran file maksimal 5MB!');
+                return;
+            }
+
+            uploadedFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('preview');
+                const previewImg = document.getElementById('previewImg');
+                previewImg.src = e.target.result;
+                preview.style.display = 'block';
+                updateMatchButton();
+            };
+            reader.readAsDataURL(file);
+            hideError();
+        }
+
+        function updateMatchButton() {
+            matchBtn.disabled = !(nameInput.value.trim() && uploadedFile);
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+
+        // Generate cache key from name and image
+        function generateCacheKey(name, imageData) {
+            let hash = 0;
+            const str = name + imageData.substring(0, 100);
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString();
+        }
+
+        // Main matching function
+        matchBtn.addEventListener('click', async () => {
+            const userName = nameInput.value.trim();
+            const userNameLower = userName.toLowerCase();
+            const imageData = document.getElementById('previewImg').src;
+            
+            // Check cache first untuk konsistensi
+            const cacheKey = generateCacheKey(userNameLower, imageData);
+            if (matchCache[cacheKey]) {
+                displayResult(matchCache[cacheKey]);
+                return;
+            }
+            
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Check if user is "disyak" or "disyak azzahra putri"
+            const isDisyak = userNameLower === 'disyak' || 
+                            userNameLower === 'disyak azzahra putri' ||
+                            userNameLower.includes('disyak azzahra') ||
+                            userNameLower.includes('disyak');
+
+            let matchResult;
+            if (isDisyak) {
+                // Perfect match dengan KAMU (pria berjas)
+                const compatibility = Math.floor(Math.random() * 11) + 90;
+                matchResult = {
+                    userName: userName,
+                    name: 'Pasangan Sempurnamu! 💖',
+                    photo: MY_PHOTO, // Foto KAMU (pria berjas)
+                    compatibility: compatibility,
+                    message: '🎉 WOW! Kalian adalah pasangan yang SEMPURNA! Jodoh banget! 🎉'
+                };
+            } else {
+                // Random celebrity match
+                const randomCelebrity = celebrities[Math.floor(Math.random() * celebrities.length)];
+                const compatibility = Math.floor(Math.random() * 46) + 40;
+                matchResult = {
+                    userName: userName,
+                    name: randomCelebrity.name,
+                    photo: randomCelebrity.photo,
+                    compatibility: compatibility,
+                    message: 'Kalian cocok! Semoga bertemu jodoh yang sebenarnya! 😊'
+                };
+            }
+
+            // Store in cache untuk konsistensi
+            matchCache[cacheKey] = matchResult;
+            displayResult(matchResult);
+        });
+
+        function displayResult(match) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+
+            document.getElementById('userPhoto').src = document.getElementById('previewImg').src;
+            document.getElementById('matchPhoto').src = match.photo;
+            document.getElementById('userName').textContent = match.userName;
+            document.getElementById('compatibility').textContent = match.compatibility + '%';
+            document.getElementById('matchName').textContent = match.name;
+            document.getElementById('matchMessage').textContent = match.message;
+
+            if (match.compatibility >= 90) {
+                setTimeout(createConfetti, 300);
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.textContent = ['❤️', '💕', '💖', '💗', '💘'][Math.floor(Math.random() * 5)];
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-50px';
+                    confetti.style.fontSize = '20px';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.pointerEvents = 'none';
+                    document.body.appendChild(confetti);
+
+                    const animation = confetti.animate([
+                        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                        { transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                    ], {
+                        duration: Math.random() * 3000 + 2000,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    });
+
+                    animation.onfinish = () => confetti.remove();
+                }, i * 50);
+            }
+        }
+
+        function resetApp() {
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('preview').style.display = 'none';
+            nameInput.value = '';
+            fileInput.value = '';
+            uploadedFile = null;
+            updateMatchButton();
+        }
+
+        // Initialize
+        createHearts();
+    </script>
+</body>
+</html>
