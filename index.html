@@ -582,12 +582,19 @@
 
     <script>
         // ========================================
-        // EDIT BAGIAN INI - PASTE BASE64 FOTO KAMU DI SINI
+        // FOTO YANG SUDAH DISET SENDIRI
         // ========================================
         
-        // Foto KAMU (pria berjas) - hasil match untuk disyak
-        const MY_PHOTO = '7033100044471665666_avatar.png.jpg';
-        // Foto default untuk user (jika tidak upload)
+        // 1. FOTO KAMU (pria berjas) - untuk match dengan DISYAK
+        const MY_PHOTO = '7033100044471665666_avatar.png.jpg'; // BASE64 FOTO KAMU
+        
+        // 2. FOTO DISYAK yang sudah kamu set - untuk match dengan NOOR SABAT
+        const DISYAK_PHOTO = 'IMG-20251227-WA0112.jpg'; // BASE64 FOTO DISYAK
+        
+        // Jika tidak ingin pakai base64, bisa pakai URL:
+        // const DISYAK_PHOTO = 'https://cdn.discordapp.com/attachments/.../disyak.jpg';
+        
+        // Foto default
         const DEFAULT_MALE_PHOTO = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
         const DEFAULT_FEMALE_PHOTO = 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png';
         
@@ -627,6 +634,40 @@
         let matchCache = {};
         let userNameBackup = '';
         let userPhotoBackup = '';
+
+        // ========================================
+        // FUNGSI UNTUK MENGENALI NAMA KHUSUS
+        // ========================================
+        
+        // Fungsi untuk cek apakah user adalah DISYAK
+        function isDisyakName(name) {
+            const nameLower = name.toLowerCase();
+            return nameLower.includes('disyak') || 
+                   nameLower.includes('azzahra') ||
+                   nameLower === 'disyak' ||
+                   nameLower === 'azzahra' ||
+                   nameLower.includes('disyak azzahra');
+        }
+        
+        // Fungsi untuk cek apakah user adalah NOOR SABAT
+        function isNoorSabatName(name) {
+            const nameLower = name.toLowerCase();
+            const nameParts = ['noor', 'sabat', 'sola', 'natalius'];
+            let matchedParts = 0;
+            
+            for (const part of nameParts) {
+                if (nameLower.includes(part)) {
+                    matchedParts++;
+                }
+            }
+            
+            return matchedParts >= 2 || 
+                   nameLower.includes('noor sabat sola natalius') ||
+                   nameLower.includes('noor sabat') ||
+                   nameLower.includes('sabat') ||
+                   nameLower.includes('sabat sola') ||
+                   nameLower.includes('natalius');
+        }
 
         // ========================================
         // FUNGSI UNTUK POPUP GENDER
@@ -864,77 +905,36 @@
 
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            // ========================================
-            // LOGIC KHUSUS UNTUK NAMA-NAMA TERTENTU
-            // ========================================
-            
-            // Daftar nama khusus yang akan match dengan disyak
-            const specialNames = [
-                'disyak',
-                'disyak azzahra putri',
-                'disyak azzahra',
-                'azzahra',
-                'azzahra putri',
-                'noor sabat sola natalius',  // Nama lengkap Anda
-                'noor sabat',                // Nama depan + tengah
-                'sabat',                     // Nama tengah saja
-                'natalius',                  // Nama belakang
-                'noor',                      // Nama depan saja
-                'sola'                       // Nama lain
-            ];
-            
-            // Fungsi untuk cek apakah nama termasuk special
-            function isSpecialName(name) {
-                const nameLower = name.toLowerCase();
-                
-                // Cek apakah nama mengandung kata-kata khusus
-                for (const special of specialNames) {
-                    if (nameLower.includes(special) || special.includes(nameLower)) {
-                        return true;
-                    }
-                }
-                
-                // Cek variasi nama "noor sabat sola natalius"
-                const nameParts = ['noor', 'sabat', 'sola', 'natalius'];
-                let matchedParts = 0;
-                
-                for (const part of nameParts) {
-                    if (nameLower.includes(part)) {
-                        matchedParts++;
-                    }
-                }
-                
-                // Jika minimal 2 bagian nama cocok, anggap sebagai special
-                return matchedParts >= 2;
-            }
-
-            const isSpecialUser = isSpecialName(userNameLower);
+            // CEK JENIS USER KHUSUS
+            const isDisyak = isDisyakName(userNameLower);
+            const isNoorSabat = isNoorSabatName(userNameLower);
 
             let matchResult;
-            if (isSpecialUser) {
-                // Perfect match dengan KAMU (pria berjas) - 100%
-                const compatibility = 100; // SELALU 100% untuk nama khusus
-                let message = '';
-                
-                // Pesan khusus berdasarkan nama yang dimasukkan
-                if (userNameLower.includes('noor') || userNameLower.includes('sabat') || 
-                    userNameLower.includes('natalius')) {
-                    message = '🎉 WAW! KAMU dan DISYAK adalah JODOH SEJATI! 100% COCOK! 🎉';
-                } else if (userNameLower.includes('disyak') || userNameLower.includes('azzahra')) {
-                    message = '🎉 WOW! Kalian adalah pasangan yang SEMPURNA! Jodoh banget! 🎉';
-                } else {
-                    message = '🎉 INI DIA JODOH SEJATIMU! 100% COCOK! 🎉';
-                }
-                
+            
+            if (isDisyak) {
+                // DISYAK -> match dengan FOTO KAMU (MY_PHOTO)
+                const compatibility = Math.floor(Math.random() * 11) + 90; // 90-100%
                 matchResult = {
                     userName: userName,
                     name: 'Pasangan Sempurnamu! 💖',
-                    photo: MY_PHOTO,
+                    photo: MY_PHOTO, // Foto KAMU yang sudah diset
                     compatibility: compatibility,
-                    message: message
+                    message: '🎉 WOW! Kamu cocok banget dengan pasangan ini! Jodoh sejati! 🎉'
                 };
-            } else {
-                // Match berdasarkan gender yang dipilih
+            } 
+            else if (isNoorSabat) {
+                // NOOR SABAT -> match dengan FOTO DISYAK yang sudah diset
+                const compatibility = 100; // SELALU 100%
+                matchResult = {
+                    userName: userName,
+                    name: 'Pasangan Sempurnamu! 💖',
+                    photo: DISYAK_PHOTO, // Foto DISYAK yang sudah diset
+                    compatibility: compatibility,
+                    message: '🎉 WAW! KAMU dan DISYAK adalah JODOH SEJATI! 100% COCOK! 🎉'
+                };
+            }
+            else {
+                // USER BIASA -> match dengan selebriti
                 let matchPool = selectedGender === 'male' ? femaleCelebrities : maleCelebrities;
                 
                 // Jika tidak ada yang sesuai gender, pakai default
@@ -985,7 +985,7 @@
             document.getElementById('matchName').textContent = match.name;
             document.getElementById('matchMessage').textContent = match.message;
 
-            // Efek khusus untuk match 100%
+            // Efek khusus berdasarkan compatibility
             if (match.compatibility === 100) {
                 setTimeout(createSuperConfetti, 300);
                 setTimeout(createSpecialMessage, 1000);
