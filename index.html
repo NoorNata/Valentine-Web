@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valentine Matcher 💕</title>
     <link rel="icon" href="heart-love-emoji-3d-png.png" type="image/png">
     <style>
+        /* ... (kode CSS sebelumnya tetap sama) ... */
         * {
             margin: 0;
             padding: 0;
@@ -312,14 +312,217 @@
         transform: scaleX(1.4) scaleY(1.6);
         opacity: 0;
         }
+        /* POPUP GENDER STYLING */
+        .gender-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(102, 126, 234, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease;
+        }
 
+        .gender-popup {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: popIn 0.6s ease-out;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .gender-popup h2 {
+            color: #e91e63;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .gender-popup p {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .gender-options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .gender-card {
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+            border-radius: 20px;
+            padding: 30px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 150px;
+            border: 3px solid transparent;
+        }
+
+        .gender-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(233, 30, 99, 0.2);
+        }
+
+        .gender-card.selected {
+            border-color: #e91e63;
+            background: linear-gradient(135deg, #f8bbd9, #f48fb1);
+            box-shadow: 0 10px 25px rgba(233, 30, 99, 0.3);
+        }
+
+        .gender-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .gender-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .gender-desc {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #e91e63, #c2185b);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+
+        .start-btn.active {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .start-btn.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(233, 30, 99, 0.3);
+        }
+
+        /* TOMBOL KEMBALI/GANTI GENDER */
+        .back-gender-btn {
+            background: transparent;
+            color: #e91e63;
+            border: 2px solid #e91e63;
+            padding: 10px 25px;
+            font-size: 1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-gender-btn:hover {
+            background: #e91e63;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .gender-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+            border-radius: 25px;
+            border: 2px solid #f48fb1;
+        }
+
+        .gender-display-icon {
+            font-size: 1.5em;
+        }
+
+        .gender-display-text {
+            font-weight: 600;
+            color: #c2185b;
+        }
+
+        .gender-change-btn {
+            background: transparent;
+            border: none;
+            color: #e91e63;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: underline;
+            margin-left: 10px;
+            transition: all 0.3s;
+        }
+
+        .gender-change-btn:hover {
+            color: #c2185b;
+        }
     </style>
 </head>
 <body>
+    <!-- Popup Gender -->
+    <div class="gender-popup-overlay" id="genderPopup">
+        <div class="gender-popup">
+            <h2>💖 Selamat Datang! 💖</h2>
+            <p>Sebelum mencari pasangan Valentine, pilih jenis kelamin kamu dulu ya!</p>
+            
+            <div class="gender-options">
+                <div class="gender-card" onclick="selectGenderInPopup('male')">
+                    <div class="gender-icon">👨</div>
+                    <div class="gender-title">Pria</div>
+                    <div class="gender-desc">Saya pria</div>
+                </div>
+                
+                <div class="gender-card" onclick="selectGenderInPopup('female')">
+                    <div class="gender-icon">👩</div>
+                    <div class="gender-title">Wanita</div>
+                    <div class="gender-desc">Saya wanita</div>
+                </div>
+            </div>
+            
+            <button class="start-btn" id="startBtn" onclick="startApp()">Mulai Pencarian 💘</button>
+        </div>
+    </div>
+
     <div class="hearts" id="hearts"></div>
     
-    <div class="container">
+    <div class="container" style="display: none;" id="mainContainer">
         <h1>💕 Valentine Matcher 💕</h1>
+        
+        <!-- Display Gender yang Dipilih -->
+        <div id="genderDisplay" class="gender-display">
+            <span class="gender-display-icon" id="genderIcon">👨</span>
+            <span class="gender-display-text" id="genderText">Pria</span>
+        </div>
+        
         <p class="subtitle">Temukan pasangan Valentine-mu!</p>
 
         <div id="uploadSection">
@@ -340,10 +543,13 @@
 
             <p class="error" id="error"></p>
 
-            <button id="matchBtn" disabled>Cari Pasangan! 💘</button>
-            <!-- From Uiverse.io by cssbuttons-io --> 
-            <button class="btn" onclick="window.open('perbaikan.html', '_blank')">Fun Web</button>
-
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button id="matchBtn" disabled>Cari Pasangan! 💘</button>
+                <button class="back-gender-btn" onclick="showGenderPopup()">
+                    <span>🔙</span> Ganti Gender
+                </button>
+                <button class="btn" onclick="window.open('perbaikan.html', '_blank')">Fun Web</button>
+            </div>
         </div>
 
         <div class="loading" id="loading">
@@ -364,7 +570,13 @@
                 <div class="match-name" id="matchName"></div>
                 <p id="matchMessage" style="font-size: 1.1em; margin-top: 15px;"></p>
             </div>
-            <button class="reset-btn" onclick="resetApp()">Coba Lagi</button>
+            
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                <button class="reset-btn" onclick="resetApp()">Cari Pasangan Lain</button>
+                <button class="back-gender-btn" onclick="showGenderPopup()">
+                    <span>🔙</span> Ganti Gender
+                </button>
+            </div>
         </div>
     </div>
 
@@ -374,22 +586,27 @@
         // ========================================
         
         // Foto KAMU (pria berjas) - hasil match untuk disyak
-        // Cara: Encode Image 1 jadi base64, paste di antara tanda petik
         const MY_PHOTO = '7033100044471665666_avatar.png.jpg';
-        // Contoh hasil: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...'
+        // Foto default untuk user (jika tidak upload)
+        const DEFAULT_MALE_PHOTO = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+        const DEFAULT_FEMALE_PHOTO = 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png';
         
         // ========================================
-        // JANGAN EDIT BAGIAN BAWAH INI (kecuali mau ganti selebriti)
+        // DATA SELEBRITI DENGAN GENDER
         // ========================================
-
-        const celebrities = [
+        
+        const maleCelebrities = [
             { name: 'Nicholas Saputra', photo: 'https://image.tmdb.org/t/p/original/7PHBSJB9b73QsqZJ373yuLyUdwK.jpg' },
-            { name: 'Lucas', photo: 'https://th.bing.com/th/id/OIP.gysVQR_WCNjtlPs49u3snQHaNL?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3'},
-            { name: 'Jefri Nichole', photo: 'https://play-lh.googleusercontent.com/rP4vIK2jing9WVzOg2uLStiFIilpWQ8nmRDM3VoC0TnHOVilwks2rEn28NjkcwqLGg'},
+            { name: 'Lucas', photo: 'https://th.bing.com/th/id/OIP.gysVQR_WCNjtlPs49u3snQHaNL?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3' },
+            { name: 'Jefri Nichole', photo: 'https://play-lh.googleusercontent.com/rP4vIK2jing9WVzOg2uLStiFIilpWQ8nmRDM3VoC0TnHOVilwks2rEn28NjkcwqLGg' },
             { name: 'Lee Min Ho', photo: 'https://wallpapers.com/images/hd/lee-min-ho-singer-model-kfr8mgpmaua2mxun.jpg' },
             { name: 'Park Seo Joon', photo: 'https://th.bing.com/th/id/OIP.j4V2Y8JHDzTYB4rN5rtfSgHaLG?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3' },
             { name: 'Kim Soo Hyun', photo: 'https://assets.pikiran-rakyat.com/crop/0x0:0x0/x/photo/2025/03/20/346230879.jpg' },
             { name: 'Song Joong Ki', photo: 'https://static-images.vnncdn.net/files/publish/2023/2/7/song-joong-ki-profile-665.jpg' },
+            { name: 'Venti', photo: 'https://wallpapers.com/images/hd/venti-1920-x-1600-background-jm2qx8jp2fuuz6vc.jpg' }
+        ];
+
+        const femaleCelebrities = [
             { name: 'IU (Lee Ji Eun)', photo: 'https://p4.wallpaperbetter.com/wallpaper/182/754/492/iu-lee-ji-eun-singer-actress-k-pop-hd-wallpaper-preview.jpg' },
             { name: 'Bae Suzy', photo: 'https://tse2.mm.bing.net/th/id/OIP.jPvBMdStPhjZmVV2yosojQHaFP?rs=1&pid=ImgDetMain&o=7&rm=3' },
             { name: 'Raisa Andriana', photo: 'https://cdn.tatlerasia.com/tatlerasia/i/2022/09/16182237-raisa_cover_1200x675.jpeg' },
@@ -397,20 +614,129 @@
             { name: 'Dian Sastrowardoyo', photo: 'https://www.aljazeera.com/wp-content/uploads/2024/07/IMG_8456-1-1722317701.jpg?resize=770%2C513&quality=80' },
             { name: 'Nao Tsurushima', photo: 'https://i.pinimg.com/736x/b8/db/50/b8db50f9687906c8936216d3f3f74b2d.jpg' },
             { name: 'Makoto Okunaka', photo: 'https://superstarsbio.com/wp-content/uploads/2021/11/Makoto-Okunaka-actress.jpg' },
-            { nama: 'Rina Chinen', photo: 'https://i.mydramalist.com/d6Zkd_5c.jpg'},
-            { nama: 'Ayaka Namiki', photo: 'https://tse4.mm.bing.net/th/id/OIP.ARJKq-1B0Yl2X7AFts_UiQHaJ3?rs=1&pid=ImgDetMain&o=7&rm=3'},
-            { nama: 'Yuna Hoshino', photo: 'https://tse4.mm.bing.net/th/id/OIP.mIhtwpB9un2_jU0kCN-5ugAAAA?rs=1&pid=ImgDetMain&o=7&rm=3'},
-            { name: 'Shieri Ohata', photo: 'https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/1458892_v9_aa.jpg'},
-            { name: 'Nahida', photo: 'https://tse4.mm.bing.net/th/id/OIP.1WJT7dwieQkDxcGCsWiI2AHaEK?rs=1&pid=ImgDetMain&o=7&rm=3'},
-            { name: 'Venti', photo: 'https://wallpapers.com/images/hd/venti-1920-x-1600-background-jm2qx8jp2fuuz6vc.jpg'}
+            { name: 'Rina Chinen', photo: 'https://i.mydramalist.com/d6Zkd_5c.jpg' },
+            { name: 'Ayaka Namiki', photo: 'https://tse4.mm.bing.net/th/id/OIP.ARJKq-1B0Yl2X7AFts_UiQHaJ3?rs=1&pid=ImgDetMain&o=7&rm=3' },
+            { name: 'Yuna Hoshino', photo: 'https://tse4.mm.bing.net/th/id/OIP.mIhtwpB9un2_jU0kCN-5ugAAAA?rs=1&pid=ImgDetMain&o=7&rm=3' },
+            { name: 'Shieri Ohata', photo: 'https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/1458892_v9_aa.jpg' },
+            { name: 'Nahida', photo: 'https://tse4.mm.bing.net/th/id/OIP.1WJT7dwieQkDxcGCsWiI2AHaEK?rs=1&pid=ImgDetMain&o=7&rm=3' }
         ];
 
+        // Variabel global
+        let selectedGender = null;
         let uploadedFile = null;
-        let matchCache = {}; // Cache untuk konsistensi hasil
+        let matchCache = {};
+        let userNameBackup = '';
+        let userPhotoBackup = '';
 
+        // ========================================
+        // FUNGSI UNTUK POPUP GENDER
+        // ========================================
+        
+        // Pilih gender di popup
+        function selectGenderInPopup(gender) {
+            selectedGender = gender;
+            
+            // Update tampilan card yang dipilih
+            document.querySelectorAll('.gender-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Aktifkan card yang dipilih
+            const selectedCard = document.querySelector(`.gender-card:nth-child(${gender === 'male' ? 1 : 2})`);
+            selectedCard.classList.add('selected');
+            
+            // Aktifkan tombol mulai
+            document.getElementById('startBtn').classList.add('active');
+        }
+
+        // Tampilkan popup gender
+        function showGenderPopup() {
+            // Simpan data yang sudah diisi
+            userNameBackup = document.getElementById('nameInput').value;
+            userPhotoBackup = document.getElementById('previewImg').src;
+            
+            // Sembunyikan halaman utama
+            document.getElementById('mainContainer').style.display = 'none';
+            
+            // Tampilkan popup gender
+            const popup = document.getElementById('genderPopup');
+            popup.style.display = 'flex';
+            popup.style.animation = 'fadeIn 0.5s ease';
+            
+            // Set gender yang sudah dipilih (jika ada)
+            if (selectedGender) {
+                const selectedCard = document.querySelector(`.gender-card:nth-child(${selectedGender === 'male' ? 1 : 2})`);
+                if (selectedCard) {
+                    selectedCard.classList.add('selected');
+                }
+                document.getElementById('startBtn').classList.add('active');
+            }
+        }
+
+        // Mulai aplikasi setelah memilih gender
+        function startApp() {
+            if (!selectedGender) {
+                alert('Silakan pilih jenis kelamin terlebih dahulu!');
+                return;
+            }
+            
+            // Update tampilan gender di halaman utama
+            updateGenderDisplay();
+            
+            // Sembunyikan popup
+            const popup = document.getElementById('genderPopup');
+            popup.style.animation = 'fadeIn 0.5s ease reverse';
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 500);
+            
+            // Tampilkan container utama
+            const container = document.getElementById('mainContainer');
+            container.style.display = 'block';
+            
+            // Restore data yang disimpan
+            if (userNameBackup) {
+                document.getElementById('nameInput').value = userNameBackup;
+            }
+            if (userPhotoBackup && userPhotoBackup.includes('data:')) {
+                document.getElementById('previewImg').src = userPhotoBackup;
+                document.getElementById('preview').style.display = 'block';
+            }
+            
+            // Update tombol berdasarkan data yang sudah ada
+            updateMatchButton();
+            
+            // Buat floating hearts
+            createHearts();
+            
+            // Fokus ke input nama
+            setTimeout(() => {
+                document.getElementById('nameInput').focus();
+            }, 300);
+        }
+
+        // Update tampilan gender di halaman utama
+        function updateGenderDisplay() {
+            const genderIcon = document.getElementById('genderIcon');
+            const genderText = document.getElementById('genderText');
+            
+            if (selectedGender === 'male') {
+                genderIcon.textContent = '👨';
+                genderText.textContent = 'Pria';
+            } else if (selectedGender === 'female') {
+                genderIcon.textContent = '👩';
+                genderText.textContent = 'Wanita';
+            }
+        }
+
+        // ========================================
+        // FUNGSI UTAMA APLIKASI
+        // ========================================
+        
         // Create floating hearts
         function createHearts() {
             const heartsContainer = document.getElementById('hearts');
+            heartsContainer.innerHTML = ''; // Clear existing hearts
             for (let i = 0; i < 15; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
@@ -481,7 +807,21 @@
         }
 
         function updateMatchButton() {
-            matchBtn.disabled = !(nameInput.value.trim() && uploadedFile);
+            matchBtn.disabled = !(nameInput.value.trim() && uploadedFile && selectedGender);
+            
+            // Update status tombol
+            if (matchBtn.disabled) {
+                let message = '';
+                if (!nameInput.value.trim()) message = 'Masukkan nama kamu';
+                else if (!uploadedFile) message = 'Upload foto kamu';
+                else if (!selectedGender) message = 'Pilih gender kamu';
+                
+                if (message) {
+                    matchBtn.title = message;
+                }
+            } else {
+                matchBtn.title = 'Klik untuk mencari pasangan!';
+            }
         }
 
         function showError(message) {
@@ -495,9 +835,9 @@
         }
 
         // Generate cache key from name and image
-        function generateCacheKey(name, imageData) {
+        function generateCacheKey(name, imageData, gender) {
             let hash = 0;
-            const str = name + imageData.substring(0, 100);
+            const str = name + imageData.substring(0, 100) + gender;
             for (let i = 0; i < str.length; i++) {
                 const char = str.charCodeAt(i);
                 hash = ((hash << 5) - hash) + char;
@@ -513,7 +853,7 @@
             const imageData = document.getElementById('previewImg').src;
             
             // Check cache first untuk konsistensi
-            const cacheKey = generateCacheKey(userNameLower, imageData);
+            const cacheKey = generateCacheKey(userNameLower, imageData, selectedGender);
             if (matchCache[cacheKey]) {
                 displayResult(matchCache[cacheKey]);
                 return;
@@ -524,33 +864,101 @@
 
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            // Check if user is "disyak" or "disyak azzahra putri"
-            const isDisyak = userNameLower === 'disyak' || 
-                            userNameLower === 'disyak azzahra putri' ||
-                            userNameLower.includes('disyak azzahra') ||
-                            userNameLower.includes('disyak');
+            // ========================================
+            // LOGIC KHUSUS UNTUK NAMA-NAMA TERTENTU
+            // ========================================
+            
+            // Daftar nama khusus yang akan match dengan disyak
+            const specialNames = [
+                'disyak',
+                'disyak azzahra putri',
+                'disyak azzahra',
+                'azzahra',
+                'azzahra putri',
+                'noor sabat sola natalius',  // Nama lengkap Anda
+                'noor sabat',                // Nama depan + tengah
+                'sabat',                     // Nama tengah saja
+                'natalius',                  // Nama belakang
+                'noor',                      // Nama depan saja
+                'sola'                       // Nama lain
+            ];
+            
+            // Fungsi untuk cek apakah nama termasuk special
+            function isSpecialName(name) {
+                const nameLower = name.toLowerCase();
+                
+                // Cek apakah nama mengandung kata-kata khusus
+                for (const special of specialNames) {
+                    if (nameLower.includes(special) || special.includes(nameLower)) {
+                        return true;
+                    }
+                }
+                
+                // Cek variasi nama "noor sabat sola natalius"
+                const nameParts = ['noor', 'sabat', 'sola', 'natalius'];
+                let matchedParts = 0;
+                
+                for (const part of nameParts) {
+                    if (nameLower.includes(part)) {
+                        matchedParts++;
+                    }
+                }
+                
+                // Jika minimal 2 bagian nama cocok, anggap sebagai special
+                return matchedParts >= 2;
+            }
+
+            const isSpecialUser = isSpecialName(userNameLower);
 
             let matchResult;
-            if (isDisyak) {
-                // Perfect match dengan KAMU (pria berjas)
-                const compatibility = Math.floor(Math.random() * 11) + 90;
+            if (isSpecialUser) {
+                // Perfect match dengan KAMU (pria berjas) - 100%
+                const compatibility = 100; // SELALU 100% untuk nama khusus
+                let message = '';
+                
+                // Pesan khusus berdasarkan nama yang dimasukkan
+                if (userNameLower.includes('noor') || userNameLower.includes('sabat') || 
+                    userNameLower.includes('natalius')) {
+                    message = '🎉 WAW! KAMU dan DISYAK adalah JODOH SEJATI! 100% COCOK! 🎉';
+                } else if (userNameLower.includes('disyak') || userNameLower.includes('azzahra')) {
+                    message = '🎉 WOW! Kalian adalah pasangan yang SEMPURNA! Jodoh banget! 🎉';
+                } else {
+                    message = '🎉 INI DIA JODOH SEJATIMU! 100% COCOK! 🎉';
+                }
+                
                 matchResult = {
                     userName: userName,
                     name: 'Pasangan Sempurnamu! 💖',
-                    photo: MY_PHOTO, // Foto KAMU (pria berjas)
+                    photo: MY_PHOTO,
                     compatibility: compatibility,
-                    message: '🎉 WOW! Kalian adalah pasangan yang SEMPURNA! Jodoh banget! 🎉'
+                    message: message
                 };
             } else {
-                // Random celebrity match
-                const randomCelebrity = celebrities[Math.floor(Math.random() * celebrities.length)];
-                const compatibility = Math.floor(Math.random() * 46) + 40;
+                // Match berdasarkan gender yang dipilih
+                let matchPool = selectedGender === 'male' ? femaleCelebrities : maleCelebrities;
+                
+                // Jika tidak ada yang sesuai gender, pakai default
+                if (matchPool.length === 0) {
+                    matchPool = selectedGender === 'male' ? maleCelebrities : femaleCelebrities;
+                }
+                
+                const randomCelebrity = matchPool[Math.floor(Math.random() * matchPool.length)];
+                const compatibility = Math.floor(Math.random() * 41) + 50; // 50-90%
+                
+                // Tentukan pesan berdasarkan compatibility
+                let message = 'Kalian cocok! Semoga bertemu jodoh yang sebenarnya! 😊';
+                if (compatibility >= 80) {
+                    message = '🔥 Sangat cocok! Pertimbangkan untuk melanjutkan ke hubungan serius! 💍';
+                } else if (compatibility >= 70) {
+                    message = '💞 Potensi bagus! Coba kenalan lebih dalam yuk! 💕';
+                }
+                
                 matchResult = {
                     userName: userName,
                     name: randomCelebrity.name,
                     photo: randomCelebrity.photo,
                     compatibility: compatibility,
-                    message: 'Kalian cocok! Semoga bertemu jodoh yang sebenarnya! 😊'
+                    message: message
                 };
             }
 
@@ -563,16 +971,117 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('result').style.display = 'block';
 
-            document.getElementById('userPhoto').src = document.getElementById('previewImg').src;
+            // Gunakan foto yang diupload atau default berdasarkan gender
+            const userPhoto = document.getElementById('previewImg').src || 
+                            (selectedGender === 'male' ? DEFAULT_MALE_PHOTO : DEFAULT_FEMALE_PHOTO);
+            
+            document.getElementById('userPhoto').src = userPhoto;
             document.getElementById('matchPhoto').src = match.photo;
             document.getElementById('userName').textContent = match.userName;
-            document.getElementById('compatibility').textContent = match.compatibility + '%';
+            
+            // Animate compatibility score
+            animateCompatibility(match.compatibility);
+            
             document.getElementById('matchName').textContent = match.name;
             document.getElementById('matchMessage').textContent = match.message;
 
-            if (match.compatibility >= 90) {
+            // Efek khusus untuk match 100%
+            if (match.compatibility === 100) {
+                setTimeout(createSuperConfetti, 300);
+                setTimeout(createSpecialMessage, 1000);
+            } else if (match.compatibility >= 90) {
                 setTimeout(createConfetti, 300);
+            } else if (match.compatibility >= 80) {
+                setTimeout(createHeartsEffect, 300);
             }
+        }
+
+        function animateCompatibility(finalScore) {
+            const compElement = document.getElementById('compatibility');
+            let currentScore = 0;
+            const increment = Math.ceil(finalScore / 20);
+            const interval = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= finalScore) {
+                    currentScore = finalScore;
+                    clearInterval(interval);
+                    
+                    // Efek khusus untuk 100%
+                    if (finalScore === 100) {
+                        compElement.style.color = '#ffeb3b';
+                        compElement.style.textShadow = '0 0 10px #ffeb3b, 0 0 20px #ffeb3b';
+                        setTimeout(() => {
+                            compElement.style.animation = 'pulse 0.5s infinite alternate';
+                        }, 100);
+                    }
+                }
+                compElement.textContent = currentScore + '%';
+            }, 50);
+        }
+
+        function createSuperConfetti() {
+            // Confetti lebih banyak dan lebih lama
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.textContent = ['❤️', '💕', '💖', '💗', '💘', '💞', '💓', '💝'][Math.floor(Math.random() * 8)];
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-50px';
+                    confetti.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.pointerEvents = 'none';
+                    document.body.appendChild(confetti);
+
+                    const animation = confetti.animate([
+                        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                        { transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+                    ], {
+                        duration: Math.random() * 4000 + 3000,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    });
+
+                    animation.onfinish = () => confetti.remove();
+                }, i * 30);
+            }
+        }
+
+        function createSpecialMessage() {
+            // Tampilkan pesan khusus untuk 100%
+            const specialMessage = document.createElement('div');
+            specialMessage.innerHTML = '✨💖 JODOH SEJATI! 💖✨';
+            specialMessage.style.position = 'fixed';
+            specialMessage.style.top = '50%';
+            specialMessage.style.left = '50%';
+            specialMessage.style.transform = 'translate(-50%, -50%) scale(0)';
+            specialMessage.style.fontSize = '3em';
+            specialMessage.style.fontWeight = 'bold';
+            specialMessage.style.color = '#ffeb3b';
+            specialMessage.style.textShadow = '0 0 20px #e91e63';
+            specialMessage.style.zIndex = '10000';
+            specialMessage.style.pointerEvents = 'none';
+            document.body.appendChild(specialMessage);
+
+            // Animasi masuk
+            specialMessage.animate([
+                { transform: 'translate(-50%, -50%) scale(0)', opacity: 0 },
+                { transform: 'translate(-50%, -50%) scale(1.2)', opacity: 1 },
+                { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 }
+            ], {
+                duration: 1000,
+                easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
+            });
+
+            // Hilang setelah beberapa detik
+            setTimeout(() => {
+                specialMessage.animate([
+                    { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                    { transform: 'translate(-50%, -50%) scale(1.5)', opacity: 0 }
+                ], {
+                    duration: 800,
+                    easing: 'ease-out'
+                }).onfinish = () => specialMessage.remove();
+            }, 2000);
         }
 
         function createConfetti() {
@@ -601,6 +1110,25 @@
             }
         }
 
+        function createHeartsEffect() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.textContent = '💖';
+                    heart.style.position = 'fixed';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.top = Math.random() * 100 + '%';
+                    heart.style.fontSize = '30px';
+                    heart.style.zIndex = '9999';
+                    heart.style.pointerEvents = 'none';
+                    heart.style.animation = 'pulse 0.5s ease-out';
+                    document.body.appendChild(heart);
+
+                    setTimeout(() => heart.remove(), 500);
+                }, i * 100);
+            }
+        }
+
         function resetApp() {
             document.getElementById('result').style.display = 'none';
             document.getElementById('uploadSection').style.display = 'block';
@@ -608,11 +1136,28 @@
             nameInput.value = '';
             fileInput.value = '';
             uploadedFile = null;
+            
+            // Fokus kembali ke input nama
+            nameInput.focus();
+            
             updateMatchButton();
         }
 
-        // Initialize
-        createHearts();
+        // ========================================
+        // INISIALISASI APLIKASI
+        // ========================================
+        
+        // Saat halaman dimuat, langsung tampilkan popup gender
+        window.addEventListener('DOMContentLoaded', () => {
+            // Pastikan popup gender ditampilkan
+            document.getElementById('genderPopup').style.display = 'flex';
+            
+            // Sembunyikan container utama
+            document.getElementById('mainContainer').style.display = 'none';
+            
+            // Buat floating hearts di background popup
+            createHearts();
+        });
     </script>
 </body>
 </html>
